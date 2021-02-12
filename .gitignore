@@ -1,0 +1,11 @@
+*.exe
+*.dll
+*.sum
+*.out
+*.outb
+*.ech
+*.bts
+*.docx
+*.vtk
+*.vtp
+_*
