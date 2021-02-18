@@ -2,12 +2,22 @@ from __future__ import print_function
 import numpy as np
 import weio
 import sys
+import os
 
 # BadSignals=['PtfmRoll_[deg]', 'PtfmYaw_[deg]', 'HydroMzi_[N-m]']
 BadSignals=[]
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
-def compare_df(df_ref,df_cur,precision=1.e-3):
+def compare_df(df_ref,df_cur,precision=1.e-3,filename=''):
 
     SensorFailed=[]
     SensorSkipped=[]
@@ -23,6 +33,10 @@ def compare_df(df_ref,df_cur,precision=1.e-3):
             x0=df_ref[c].values
             x1=df_cur[c].values
             ma_ref=np.mean(np.abs(x0))
+            min_val =np.min(x0)
+            # We don't want to cross zero
+            #x0=x0+min_val
+            #x1=x1+min_val
 
 
             if ma_ref<1e-5:
@@ -51,9 +65,32 @@ def compare_df(df_ref,df_cur,precision=1.e-3):
                 nOK+=1
             
     if len(SensorFailed)==0:
-        print('[ OK ] {}/{} sensors passed'.format(nOK,len(df_ref.columns.values)))
+        # Font: Dot Matrix
+        print(bcolors.OKGREEN +"""
+                    _  _  _  _         _           _                               
+                  _(_)(_)(_)(_)_      (_)       _ (_)                              
+                 (_)          (_)     (_)    _ (_)                                 
+                 (_)          (_)     (_) _ (_)                                    
+                 (_)          (_)     (_)(_) _                                     
+                 (_)          (_)     (_)   (_) _                                  
+                 (_)_  _  _  _(_)     (_)      (_) _                               
+                   (_)(_)(_)(_)       (_)         (_)                              
+   """+bcolors.ENDC)
+        print(bcolors.OKGREEN +"""{}""".format(filename)+bcolors.ENDC)
+        print('[ OK ] {}/{} sensors passed - {}'.format(nOK,len(df_ref.columns.values),filename))
     else:
-        print('[FAIL] {}/{} sensors passed'.format(nOK,len(df_ref.columns.values)))
+        print(bcolors.FAIL+"""
+                                                                                    
+   (_)(_)(_)(_)(_)           _(_)_              (_)(_)(_)         (_)            
+   (_)                     _(_) (_)_               (_)            (_)            
+   (_) _  _              _(_)     (_)_             (_)            (_)            
+   (_)(_)(_)            (_) _  _  _ (_)            (_)            (_)            
+   (_)                  (_)(_)(_)(_)(_)            (_)            (_)            
+   (_)                  (_)         (_)          _ (_) _          (_) _  _  _  _ 
+   (_)                  (_)         (_)         (_)(_)(_)         (_)(_)(_)(_)(_)
+   """+bcolors.ENDC)        
+        print(bcolors.FAIL+"""{}""".format(filename)+bcolors.ENDC)
+        print('[FAIL] {}/{} sensors passed - {}'.format(nOK,len(df_ref.columns.values),filename))
     if len(SensorSkipped)>0:
         print('[WARN] {}/{} sensors skipped'.format(len(SensorSkipped),len(df_ref.columns.values)))
 
@@ -69,10 +106,13 @@ if __name__=='__main__':
 
     file_ref=sys.argv[1]
     file_cur=sys.argv[2]
+    filebase=os.path.basename(file_cur)
+    filebase=os.path.splitext(filebase)[0]
+
     if len(sys.argv)==4:
         precision=sys.argv[3]
     else:
-        precision=1.e-5
+        precision=1.e-3
 
     print('Comparing: ',file_cur)
     print('  against: ',file_ref)
@@ -81,7 +121,7 @@ if __name__=='__main__':
     df_cur = weio.read(file_cur).toDataFrame()
 
 
-    OK =compare_df(df_ref,df_cur,precision)
+    OK =compare_df(df_ref,df_cur,precision,filebase)
     if OK:
         sys.exit(0)
     else :

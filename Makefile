@@ -1,7 +1,12 @@
 
+CASES=
 # CASES= HorizontalAxis
-# CASES= VerticalAxis
-CASES= BAR
+CASES+= EllipticalWingInf_OLAF
+CASES+= BAR_OLAF
+CASES+= VerticalAxis
+CASES+= HelicalWakeInf_OLAF
+# CASES= _XFlow
+# CASES= DEBUG
 
 ALL-RULES= $(foreach case,$(CASES), run-$(case) test-$(case))
 RUN-RULES= $(foreach case,$(CASES), run-$(case))
@@ -33,14 +38,18 @@ endif
 OPENFAST=..$(SLASH)aerodynm_driver$(EXEEXT)
 
 
-EXT=out
+EXT=outb
 FAILFILE=FAIL
 
 
 # all: run test
-# all: start $(ALL-RULES) summary
-all: start $(RUN-RULES)
+all: start $(ALL-RULES) summary
+# all: start $(RUN-RULES)
 
+# all:
+# 	./aerodynm_driver.exe _Xflow/Main__XFlow.dvr
+# 
+#./aerodynm_driver.exe _XflowParametric/0.dvr
 
 
 clean-%: 
@@ -62,9 +71,8 @@ run-%:
 
 test-%:
 	@echo "------------------------- TEST $* ----------------------------------"
-	@python Test.py $*/Main_$*_ref.$(EXT) $*/Main_$*.$(EXT) && { echo ""; } || { echo "Fail $*">> $(FAILFILE); }
-	@python Test.py $*/Main_$*.AD_ref.$(EXT) $*/Main_$*.AD.$(EXT) && { echo ""; } || { echo "Fail $*">> $(FAILFILE); }
+	@python Test.py $*/Main_$*_ref.$(EXT) $*/Main_$*.$(EXT) &&  echo "";  ||  echo "Fail $*">> $(FAILFILE); 
 
 summary:
 	@echo "------------------------- SUMMARY ----------------------------------"
-	@test -e $(FAILFILE) && { echo "[FAIL]"; cat $(FAILFILE); exit 1; } || { echo "[ OK ]"; } 
+	@test -e $(FAILFILE) &&  echo "[FAIL]"; cat $(FAILFILE); exit 1;  ||  echo "[ OK ]"; 
