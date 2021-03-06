@@ -97,6 +97,18 @@ def compare_df(df_ref,df_cur,precision=1.e-3,filename=''):
     return len(SensorFailed)==0
 
 
+def doCompare(file_ref, file_cur, precision):
+    filebase=os.path.splitext(os.path.basename(file_cur))[0]
+
+    print('Comparing: ',file_cur)
+    print('  against: ',file_ref)
+
+    df_ref = weio.read(file_ref).toDataFrame()
+    df_cur = weio.read(file_cur).toDataFrame()
+
+
+    return compare_df(df_ref,df_cur,precision,filebase)
+
 if __name__=='__main__':
     if len(sys.argv)<=2:
         print('')
@@ -106,22 +118,35 @@ if __name__=='__main__':
 
     file_ref=sys.argv[1]
     file_cur=sys.argv[2]
-    filebase=os.path.basename(file_cur)
-    filebase=os.path.splitext(filebase)[0]
 
     if len(sys.argv)==4:
         precision=sys.argv[3]
     else:
         precision=1.e-3
 
-    print('Comparing: ',file_cur)
-    print('  against: ',file_ref)
+    # try to see if that's a multiple rotor case
+    if not os.path.exists(file_ref):
+        f_ref, ext =os.path.splitext(file_ref)
+        f_cur, ext =os.path.splitext(file_cur)
 
-    df_ref = weio.read(file_ref).toDataFrame()
-    df_cur = weio.read(file_cur).toDataFrame()
+        print('>>>', f_cur+'.WT1_ref'+ext)
+        OK2 = True
 
+        if os.path.exists(f_cur+'.WT1_ref'+ext):
+            file_cur=f_cur+'.WT1'+ext
+            file_ref=f_cur+'.WT1_ref'+ext
+            OK1 = doCompare(file_ref, file_cur, precision)
+        else:
+            raise Exception('Ref file not found: {}'.format(file_ref))
+        if os.path.exists(f_cur+'.WT2_ref'+ext):
+            file_cur=f_cur+'.WT2'+ext
+            file_ref=f_cur+'.WT2_ref'+ext
+            OK2 = doCompare(file_ref, file_cur, precision)
 
-    OK =compare_df(df_ref,df_cur,precision,filebase)
+        OK = OK1 and OK2
+
+    else:
+        OK = doCompare(file_ref, file_cur, precision)
     if OK:
         sys.exit(0)
     else :

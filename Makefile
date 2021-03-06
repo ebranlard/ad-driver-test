@@ -1,10 +1,13 @@
 
 CASES=
-# CASES= HorizontalAxis
 CASES+= EllipticalWingInf_OLAF
 CASES+= BAR_OLAF
 CASES+= VerticalAxis
 CASES+= HelicalWakeInf_OLAF
+CASES+= MultipleHAWT
+CASES+= BAR_SineMotion
+CASES+= Kite_OLAF
+CASES+= BAR_RNAMotion
 # CASES= _XFlow
 # CASES= DEBUG
 
@@ -64,15 +67,17 @@ test: $(TEST-RULES)
 
 run-%: 
 	@echo "------------------------- RUN $* ----------------------------------"
-	cd $* && $(OPENFAST) Main_$*.dvr    
+	@cd $* && rm -f Main_$*.out  || true
+	@cd $* && rm -f Main_$*.outb  || true
+	@cd $* && $(OPENFAST) Main_$*.dvr    
 # 	cat VerticalAxis/Main_VerticalAxis.ech 
 # 	cd $* && $(OPENFAST) Main_Not$*.fst  >OUT_NOTOVER
 # 	cd $* && $(OPENFAST) Main_$*.fst     >OUT_OVER
 
 test-%:
 	@echo "------------------------- TEST $* ----------------------------------"
-	@python Test.py $*/Main_$*_ref.$(EXT) $*/Main_$*.$(EXT) &&  echo "";  ||  echo "Fail $*">> $(FAILFILE); 
+	@python Test.py $*/Main_$*_ref.$(EXT) $*/Main_$*.$(EXT) &&  echo "";  ||  echo "[FAIL] $*" >> $(FAILFILE); 
 
 summary:
 	@echo "------------------------- SUMMARY ----------------------------------"
-	@test -e $(FAILFILE) &&  echo "[FAIL]"; cat $(FAILFILE); exit 1;  ||  echo "[ OK ]"; 
+	@test -e $(FAILFILE) &&  cat $(FAILFILE)  ||  echo "[ OK ] $(RUN-RULES)"; 
