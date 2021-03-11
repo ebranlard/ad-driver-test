@@ -2,13 +2,14 @@
 CASES=
 CASES+= EllipticalWingInf_OLAF
 CASES+= BAR_OLAF
-CASES+= VerticalAxis
 CASES+= HelicalWakeInf_OLAF
+CASES+= VerticalAxis_OLAF
+CASES+= Kite_OLAF
 CASES+= MultipleHAWT
 CASES+= BAR_SineMotion
-CASES+= Kite_OLAF
 CASES+= BAR_RNAMotion
 # CASES= _XFlow
+# CASES+= MultipleHAWT_OLAF
 # CASES= DEBUG
 
 ALL-RULES= $(foreach case,$(CASES), run-$(case) test-$(case))
