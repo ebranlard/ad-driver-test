@@ -1,5 +1,6 @@
 
 CASES=
+CASES+= QuadRotor_OLAF
 CASES+= EllipticalWingInf_OLAF
 CASES+= BAR_OLAF
 CASES+= HelicalWakeInf_OLAF
@@ -8,8 +9,9 @@ CASES+= Kite_OLAF
 CASES+= MultipleHAWT
 CASES+= BAR_SineMotion
 CASES+= BAR_RNAMotion
+CASES+= BAR_CombinedCases
+CASES+= ad_timeseries_shutdown
 # CASES= _XFlow
-# CASES+= MultipleHAWT_OLAF
 # CASES= DEBUG
 
 ALL-RULES= $(foreach case,$(CASES), run-$(case) test-$(case))

@@ -2,16 +2,16 @@
 Elliptical wing test case for OLAF free vortex wake
 ----- Input Configuration -------------------------------------------------------
 False           Echo       - Echo input parameters to "<rootname>.ech"?
-1        AnalysisType - {1: multiple turbines, one simulation, 2: one turbine, one time-dependent simulation, 3: one turbine, combined cases}
+       1        AnalysisType - {1: multiple turbines, one simulation, 2: one turbine, one time-dependent simulation, 3: one turbine, combined cases}
        1000     TMax       - Total run time (s)
         100     DT         - Simulation time step (s)
 "Elliptic_AD15_40.dat"        AeroFile   - Name of the AeroDyn input file
 ----- Inflow Data ---------------------------------------------------------------
           1      CompInflow  - Compute inflow wind velocities (switch) {0=Steady Wind; 1=InflowWind}
 "Elliptic_IW.dat"        InflowFile - Name of the InflowWind input file [used only when CompInflow=1]
-          0      HWindSpeed  - Horizontal wind speed   [used only when CompInflow=0 and AnalysisType/=2] (m/s)
-          0      RefHt       - Reference height for horizontal wind speed [used only when CompInflow=0 and AnalysisType/=2]     (m)
-          0      PLExp       - Power law exponent   [used only when CompInflow=0 and AnalysisType/=2]                           (-)
+          0      HWindSpeed  - Horizontal wind speed   [used only when CompInflow=0 and AnalysisType=1] (m/s)
+          0      RefHt       - Reference height for horizontal wind speed [used only when CompInflow=0]     (m)
+          0      PLExp       - Power law exponent   [used only when CompInflow=0 and AnalysisType=1] (-)
 ----- Turbine Data --------------------------------------------------------------
 1               NumTurbines - Number of turbines
 ----- Turbine(1) ----------------------------------------------------------------
@@ -46,7 +46,6 @@ False           HAWTprojection(1)      - True if turbine is a horizontal axis tu
 ----- Turbine(1) Blade Pitch Motion [used only when AnalysisType=1] -------------
 0               BldMotionType(1)        - Type of pitch motion prescribed for the blades {0: fixed, 1: time varying pitch} (flag)
 0               BldPitch(1_1)           - Blade 1 pitch [used only when BlMotiontype=1] (deg)
-
 "unused"        BldMotionFileName(1_1)  - Filename containing blade pitch motion [used only when BlMotionType=1]
 ----- I/O Settings --------------------------------------------------------------
 "ES15.8E2"  OutFmt        - Format used for text tabular output, excluding the time channel.  Resulting field should be 10 characters. (quoted string)
